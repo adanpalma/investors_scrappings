@@ -1,3 +1,5 @@
+import sqlite3
+
 import requests as rq
 from bs4 import BeautifulSoup as bs
 
@@ -5,36 +7,66 @@ from bs4 import BeautifulSoup as bs
 # from a https protocol
 # ssl._create_default_https_context = ssl._create_unverified_context
 
-url = "https://www.lahipotecaria.com/globalinvestors/covered-bond-program/"
-main_url = "https://www.lahipotecaria.com"
+# Abro conexion con sqllite3
+try:
+    conn = sqlite3.connect("global_investror_publication_db.db")
+    conn.row_factory = sqlite3.Row  # esto permite que los registros se obtengan
+    # como un dictionary o hash
+    cur = conn.cursor()
+    cur.execute('SELECT * from reports_parameters')
 
-# Aqui hacemos un request a la direccion url para obtener el content de la
-# pagina
+    main_url = "https://www.lahipotecaria.com"
+    url_anterior = None
+    for registro in cur.fetchall():
+        publication_name = registro['publication_name']
+        report_name = registro['report_name']
+        url = registro['url_link']
+        main_tag = registro['html_tag']
+        atr = {"class": registro['tag_attr']}
 
-htmlpage = rq.get(url)
+        # si viene null no se busca con find_all y se # busca por texto
+        publicated_month_tag = registro['publicated_month_tag']
+        publication_month_searched = "August, 2021"
 
-if htmlpage.status_code != 200:
-    print(f"Error Request status code {htmlpage}")
-    exit()
+        #esto se hace porque hay urls iguales para no repetir los requests y
+        # mejorar un poco el performance
+        if url_anterior == None or url_anterior != url:
+            htmlpage = rq.get(url)
+            status_code = htmlpage.status_code
+        url_anterior = url
 
-# Aqui pasamos el contenido de la pagina a beatifulsoup
-# y extraemos todos los tag "a" que son donde estan los arhivos a descargar
+        #TODO: Mejorarlo para que si falla por uno siga con otros registros
+        # e imprimir que reporte y url dieron error
+        if status_code != 200:
+            print(f"Error Request status code {htmlpage}")
+            exit()
 
-# bspage = bs(htmlpage.content, "html.parser", parse_only=ss("h4"))
-bspage = bs(htmlpage.content, "html.parser")
-main_tag = "div"
-atr = {'class': "SE panel-info"}
-h4_tag = "h4"
-first_main_tags = bspage.find_all(main_tag, atr)
+        # TODO: convertir en un metodo reusable para todos los reportes
+        bspage = bs(htmlpage.content, "html.parser")
 
-#TODO: convertir en un metodo que reciba el primer find_all y el se encargue
-# de buscar recursivamente el h4 para todos los reportes publicados
-# y que sea reusable...
-for firsts_tags in first_main_tags:
-    seconds_tag = firsts_tags.find("h4")
-    if "August, 2021" in seconds_tag:
-        print("Agosto fue publicado")
-    else:
-        print("Agosto no ha sido publicado")
+        first_main_tags = bspage.find_all(main_tag, atr)
+        for firsts_tags in first_main_tags:
+            "Si no hay month tag indica que esa pagina habra que buscar por texto"
+        if publicated_month_tag != None:
+            seconds_tag = firsts_tags.find(publicated_month_tag)
+            if publication_month_searched in seconds_tag:
+                estado = "Publicado"
+            else:
+                estado = "No Publicado"
+        else:
+            # al no tener publicated_month_tag se hace una busqueda por texto
+            for tags in first_main_tags:
+                if publication_month_searched in tags.text:
+                    estado = "Publicado"
+                    break
+                else:
+                    estado = "No Publicado"
 
+        print(
+                f""" {publication_name} 
+               {report_name} -> {publication_month_searched}:.....{estado}"""
+                )
 
+finally:
+    cur.close()
+    conn.close()
