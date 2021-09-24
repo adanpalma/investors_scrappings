@@ -28,16 +28,23 @@ try:
         publicated_month_tag = registro['publicated_month_tag']
         publication_month_searched = "August, 2021"
 
-        #esto se hace porque hay urls iguales para no repetir los requests y
+        # esto se hace porque hay urls iguales para no repetir los requests y
         # mejorar un poco el performance
         if url_anterior == None or url_anterior != url:
             htmlpage = rq.get(url)
             status_code = htmlpage.status_code
         url_anterior = url
 
-        #TODO: Mejorarlo para que si falla por uno siga con otros registros
-        # e imprimir que reporte y url dieron error
+        # Si el link da error, el mismo se reporta y se continua con otros
+        # reportes
         if status_code != 200:
+            print(
+                    f""" {publication_name} 
+                           {report_name} -> {url} status_code -> {status_code}
+                """
+                    )
+            continue
+
             print(f"Error Request status code {htmlpage}")
             exit()
 
