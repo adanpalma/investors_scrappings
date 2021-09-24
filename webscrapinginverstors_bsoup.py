@@ -45,9 +45,6 @@ try:
                     )
             continue
 
-            print(f"Error Request status code {htmlpage}")
-            exit()
-
         # TODO: convertir en un metodo reusable para todos los reportes
         bspage = bs(htmlpage.content, "html.parser")
 
