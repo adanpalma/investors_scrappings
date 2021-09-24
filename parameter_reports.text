@@ -1,0 +1,12 @@
+CREATE TABLE "reports_parameters" (
+	"publication_name"	TEXT,
+	"report_name"	TEXT NOT NULL,
+	"url_link"	TEXT NOT NULL,
+	"html_tag"	TEXT,
+	"tag_attr"	TEXT,
+	"publicated_month_tag"	TEXT,
+	"format"	TEXT NOT NULL,
+	"check_day"	INTEGER NOT NULL,
+	"check_frecuency"	TEXT NOT NULL,
+	"last_publication_date_MY"	TEXT
+)
