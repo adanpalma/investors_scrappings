@@ -13,7 +13,9 @@ try:
     conn.row_factory = sqlite3.Row  # esto permite que los registros se obtengan
     # como un dictionary o hash
     cur = conn.cursor()
-    cur.execute('SELECT * from reports_parameters')
+    cur.execute(
+            'SELECT * from reports_parameters '
+            )
 
     main_url = "https://www.lahipotecaria.com"
     url_anterior = None
@@ -53,24 +55,19 @@ try:
             "Si no hay month tag indica que esa pagina habra que buscar por texto"
         if publicated_month_tag != None:
             seconds_tag = firsts_tags.find(publicated_month_tag)
-            if publication_month_searched in seconds_tag:
-                estado = "Publicado"
-            else:
-                estado = "No Publicado"
+            estado = seconds_tag.text.strip()
         else:
             # al no tener publicated_month_tag se hace una busqueda por texto
+            estado = ""
             for tags in first_main_tags:
-                if publication_month_searched in tags.text:
-                    estado = "Publicado"
-                    break
-                else:
-                    estado = "No Publicado"
+                estado += tags.text.strip()
 
         print(
                 f""" {publication_name} 
-               {report_name} -> {publication_month_searched}:.....{estado}"""
+{report_name} -> {publication_month_searched if 1 == 0 else ""}: {estado}
+               """
                 )
 
 finally:
     cur.close()
-    conn.close()
+conn.close()
