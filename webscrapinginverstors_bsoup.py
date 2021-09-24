@@ -7,14 +7,15 @@ from bs4 import BeautifulSoup as bs
 # from a https protocol
 # ssl._create_default_https_context = ssl._create_unverified_context
 
-# Abro conexion con sqllite3
+
 try:
+    # Abro conexion con sqllite3
     conn = sqlite3.connect("global_investror_publication_db.db")
     conn.row_factory = sqlite3.Row  # esto permite que los registros se obtengan
     # como un dictionary o hash
     cur = conn.cursor()
     cur.execute(
-            'SELECT * from reports_parameters '
+            'SELECT * from reports_parameters'
             )
 
     main_url = "https://www.lahipotecaria.com"
@@ -56,6 +57,7 @@ try:
         if publicated_month_tag != None:
             seconds_tag = firsts_tags.find(publicated_month_tag)
             estado = seconds_tag.text.strip()
+
         else:
             # al no tener publicated_month_tag se hace una busqueda por texto
             estado = ""
@@ -70,4 +72,4 @@ try:
 
 finally:
     cur.close()
-conn.close()
+    conn.close()
