@@ -5,6 +5,8 @@ from datetime import date
 import requests as rq
 from bs4 import BeautifulSoup as bs
 
+print("estoy poniendo esto aqui para probar git")
+
 #  allow download files from ssl
 # from a https protocol
 # ssl._create_default_https_context = ssl._create_unverified_context
@@ -16,6 +18,8 @@ fecha_proceso = date.today()
 # la base de datos se arma la estructura de la fecha en formato texto y se
 # compara para que la siguiente version del script solo muestre aquellos
 # reportes que su ultima publicacion no conincide con la que se espera
+
+print("esto est otra prueba de git")
 
 try:
 	# Abro conexion con sqllite3
