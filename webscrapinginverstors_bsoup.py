@@ -17,7 +17,6 @@ fecha_proceso = date.today()
 # compara para que la siguiente version del script solo muestre aquellos
 # reportes que su ultima publicacion no conincide con la que se espera
 
-
 try:
 	# Abro conexion con sqllite3
 	conn = sqlite3.connect("global_investror_publication_db.db")
@@ -32,9 +31,10 @@ try:
 	url_anterior = None
 	for idx, registro in enumerate(reportes_a_procesar, start=1):
 		# {
-		publication_name, report_name, url, main_tag, atr, publicated_month_tag, *others_fields, salir_luego_primer_tag = registro
+		publication_name, report_name, url, main_tag, atr, publicated_month_tag, *others_fields, \
+		salir_luego_primer_tag = registro
 		
-		# como  hay urls iguales se controla que no se haga reques mas de 1 vez
+		# como  hay urls iguales se controla que no se haga request mas de 1 vez al mismo link
 		if url_anterior == None or url_anterior != url:
 			# {
 			htmlpage = rq.get(url)
@@ -42,14 +42,17 @@ try:
 		
 		url_anterior = url
 		
-		print(f"Searching for {publication_name} {report_name} ({idx} de "
-		      f"{total_registros})")
+		print(
+				f"Searching for {publication_name} {report_name} ({idx} de "
+				f"{total_registros})"
+				)
 		
 		if status_code != 200:
 			# {
-			print(f""" {publication_name}
-                           {report_name} -> {url} status_code -> {status_code}
-                """)
+			print(
+					f""" {publication_name}
+                           {report_name} -> {url} status_code -> {status_code}"""
+					)
 			continue
 		# }
 		

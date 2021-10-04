@@ -11,3 +11,4 @@ CREATE TABLE "reports_parameters" (
 	"last_publication_date_MY"	TEXT
 , "date_format"	TEXT,
 "salir_luego_primer_tag"	TEXT)
+
