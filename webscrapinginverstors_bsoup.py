@@ -42,17 +42,11 @@ try:
 		
 		url_anterior = url
 		
-		print(
-				f"Searching for {publication_name} {report_name} ({idx} de "
-				f"{total_registros})"
-				)
+		print(f"Searching for {publication_name} {report_name} ({idx} de {total_registros})")
 		
 		if status_code != 200:
 			# {
-			print(
-					f""" {publication_name}
-                           {report_name} -> {url} status_code -> {status_code}"""
-					)
+			print(f""" {publication_name} {report_name} -> {url} status_code -> {status_code}""")
 			continue
 		# }
 		
