@@ -1,0 +1,13 @@
+/global_investror_publication_db.db
+/webdrivers/chromedriver
+/.gitignore
+/.python-version
+/global_investror_publication_db
+/identifier.sqlite
+/International_Investments.csv
+/global_investror_publication_db.db-journal
+/setup.py
+/build/
+/dist/
+/investor_scrap.egg-info/
+/webdrivers/

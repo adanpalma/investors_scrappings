@@ -1,7 +1,7 @@
 import csv
 import sqlite3
 from datetime import date
-
+from pathlib import Path as path
 import requests as rq
 from bs4 import BeautifulSoup as bs
 
@@ -18,6 +18,7 @@ fecha_proceso = date.today()
 # reportes que su ultima publicacion no conincide con la que se espera
 
 try:
+	
 	# Abro conexion con sqllite3
 	conn = sqlite3.connect("global_investror_publication_db.db")
 	conn.row_factory = sqlite3.Row  # esto permite que los registros se obtengan
@@ -75,7 +76,11 @@ try:
 	
 	# }
 	
-	with open("International_Investments.csv", "w") as csvfile:
+	directorio = path("output/")
+	if not directorio.exists():
+		directorio = directorio.mkdir(parents=False, exist_ok=True)
+	
+	with open(f"{directorio.name}/International_Investments.csv", "w") as csvfile:
 		writer = csv.writer(csvfile)
 		writer.writerow([f"Fecha de Reporte {fecha_proceso.strftime('%B %d,%Y')}"])
 		writer.writerow(["Publication Name", "Report Name", "Last Publication Date"])
