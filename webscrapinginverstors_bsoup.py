@@ -30,55 +30,58 @@ try:
 	
 	main_url = "https://www.lahipotecaria.com"
 	url_anterior = None
-	for idx, registro in enumerate(reportes_a_procesar, start=1):
-		# {
-		publication_name, report_name, url, main_tag, atr, publicated_month_tag, *others_fields, \
-		salir_luego_primer_tag = registro
-		
-		# como  hay urls iguales se controla que no se haga request mas de 1 vez al mismo link
-		if url_anterior == None or url_anterior != url:
-			# {
-			htmlpage = rq.get(url)
-			status_code = htmlpage.status_code  # }
-		
-		url_anterior = url
-		
-		print(f"Searching for {publication_name} {report_name} ({idx} de {total_registros})")
-		
-		if status_code != 200:
-			# {
-			print(f""" {publication_name} {report_name} -> {url} status_code -> {status_code}""")
-			continue
-		# }
-		
-		# TODO: convertir en un metodo reusable para todos los reportes
-		
-		bspage = bs(htmlpage.content, "html.parser")
-		
-		first_main_tags = bspage.find_all(main_tag, atr)
-		
-		for firsts_tags in first_main_tags:
-			# {
-			#  "Si no hay month tag indica que esa pagina habra que buscar por texto"
-			if publicated_month_tag != None:
-				seconds_tag = firsts_tags.find(publicated_month_tag)
-				estado = seconds_tag.text.strip()
-			else:
-				# al no tener publicated_month_tag se hace una busqueda por texto
-				estado = ""
-				for tags in first_main_tags:
-					estado += tags.text.strip()
-			
-			lineas_a_imprimir.append([publication_name, report_name, estado])
-			
-			if salir_luego_primer_tag == "S":
-				break  # }
+	# for idx, registro in enumerate(reportes_a_procesar, start=1):
+	# 	# {
+	# 	publication_name, report_name, url, main_tag, atr, publicated_month_tag, *others_fields, \
+	# 	salir_luego_primer_tag = registro
+	#
+	# 	# como  hay urls iguales se controla que no se haga request mas de 1 vez al mismo link
+	# 	if url_anterior == None or url_anterior != url:
+	# 		# {
+	# 		htmlpage = rq.get(url)
+	# 		status_code = htmlpage.status_code  # }
+	#
+	# 	url_anterior = url
+	#
+	# 	print(f"Searching for {publication_name} {report_name} ({idx} de {total_registros})")
+	#
+	# 	if status_code != 200:
+	# 		# {
+	# 		print(f""" {publication_name} {report_name} -> {url} status_code -> {status_code}""")
+	# 		continue
+	# 	# }
+	#
+	# 	# TODO: convertir en un metodo reusable para todos los reportes
+	#
+	# 	bspage = bs(htmlpage.content, "html.parser")
+	#
+	# 	first_main_tags = bspage.find_all(main_tag, atr)
+	#
+	# 	for firsts_tags in first_main_tags:
+	# 		# {
+	# 		#  "Si no hay month tag indica que esa pagina habra que buscar por texto"
+	# 		if publicated_month_tag != None:
+	# 			seconds_tag = firsts_tags.find(publicated_month_tag)
+	# 			estado = seconds_tag.text.strip()
+	# 		else:
+	# 			# al no tener publicated_month_tag se hace una busqueda por texto
+	# 			estado = ""
+	# 			for tags in first_main_tags:
+	# 				estado += tags.text.strip()
+	#
+	# 		lineas_a_imprimir.append([publication_name, report_name, estado])
+	#
+	# 		if salir_luego_primer_tag == "S":
+	# 			break  # }
+	#
+	# # }
 	
-	# }
-	
-	directorio = path("output/")
+	directorio = path("output")
+	directorio = directorio.resolve()
 	if not directorio.exists():
 		directorio = directorio.mkdir(parents=False, exist_ok=True)
+		
+	file = path.joinpath(directorio,'International_Investments.csv')
 	
 	with open(f"{directorio.name}/International_Investments.csv", "w") as csvfile:
 		writer = csv.writer(csvfile)
